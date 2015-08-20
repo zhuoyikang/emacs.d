@@ -42,7 +42,7 @@
 
 (require 'init-frame-hooks)
 (require 'init-xterm)
-(require 'init-themes)
+;;(require 'init-themes)
 (require 'init-osx-keys)
 (require 'init-gui-frames)
 (require 'init-proxies)
@@ -88,7 +88,7 @@
 (require 'init-rails)
 (require 'init-sql)
 
-(require 'init-paredit)
+;;(require 'init-paredit)
 (require 'init-lisp)
 (require 'init-slime)
 (when (>= emacs-major-version 24)
