@@ -63,6 +63,70 @@
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 (setq-default c-basic-offset 4)
 
+(setq semantic-default-submodes '(global-semantic-mru-bookmark-mode
+                                  global-semanticdb-minor-mode
+                                  global-semantic-idle-scheduler-mode
+                                  global-semantic-idle-summary-mode
+                                  global-semantic-decoration-mode
+                                  global-semantic-tag-folding-mode
+                                  ;;global-semantic-idle-tag-highlight-mode
+                                  global-semantic-mru-bookmark-mode
+                                  global-semantic-stickyfunc-mode))
+(semantic-mode 1)
+
+
+;; 导入高级的名字补全，信息显示等
+(require 'semantic/ia)
+
+;; 使用semantic的跳入和跳出功能
+(defadvice push-mark (around semantic-mru-bookmark activate)
+  (semantic-mrub-push semantic-mru-bookmark-ring (point) 'mark)
+  ad-do-it)
+
+(setq zyk-include-path-list (list "/usr/local/include/python2.7"
+                                  "/Users/zhuoyikang/Source/games/T4/cocos2d/cocos"
+                                  "/Users/zhuoyikang/Source/games/T4/cocos2d/cocos/ui"
+                                  "/Users/zhuoyikang/Source/games/T4/cocos2d/cocos/editor-support/"
+                                  "/Users/zhuoyikang/Source/games/T4/cocos2d/external/glfw3/include/mac"
+                                  "/Users/zhuoyikang/Source/games/T4/cocos2d/external/"
+                                  "../"
+                                  ))
+
+
+(defun semantic-ia-fast-jump-back ()
+  (interactive)
+  (if (ring-empty-p (oref semantic-mru-bookmark-ring ring))
+      (error "Semantic Bookmark ring is currently empty"))
+  (let* ((ring (oref semantic-mru-bookmark-ring ring))
+         (alist (semantic-mrub-ring-to-assoc-list ring))
+         (first (cdr (car alist))))
+    (if (semantic-equivalent-tag-p (oref first tag) (semantic-current-tag))
+        (setq first (cdr (car (cdr alist)))))
+    (semantic-mrub-switch-tags first)))
+
+
+;; 绑定到按键.
+(global-set-key (kbd "M-m")  'semantic-ia-fast-jump)
+;;(global-set-key (kbd "M-n")  'semantic-ia-fast-jump-back)
+(global-set-key (kbd "M-0")  'semantic-ia-fast-jump)
+(global-set-key (kbd "M-1")  'semantic-ia-fast-jump-back)
+
+
+;; 增加自定义的搜索路径
+(defun my-semantic-hook ()
+  (let ((list-directory zyk-include-path-list))
+    (while (car list-directory)
+      (progn
+        (semantic-add-system-include (car list-directory) 'c-mode)
+        (semantic-add-system-include (car list-directory) 'c++-mode)
+        )
+      (setq list-directory (cdr list-directory)))
+    ))
+
+(add-hook 'semantic-init-hooks 'my-semantic-hook)
+
+
+
 ;;----------------------------------------------------------------------------
 ;; 习惯按键设置
 ;;----------------------------------------------------------------------------
