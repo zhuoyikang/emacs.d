@@ -87,6 +87,7 @@
 (require 'init-ruby-mode)
 (require 'init-rails)
 (require 'init-sql)
+(require 'init-zyk)
 
 (require 'init-paredit)
 (require 'init-lisp)
