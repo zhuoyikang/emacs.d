@@ -52,6 +52,12 @@
 (add-hook 'org-shiftright-final-hook 'windmove-right)
 
 
+;; 归档已完成的任务
+(defun my-org-archive-done-tasks ()
+  (interactive)
+  (org-map-entries 'org-archive-subtree "/DONE" 'file))
+
+
 ;;----------------------------------------------------------------------------
 ;; c/c++
 ;;----------------------------------------------------------------------------
@@ -138,14 +144,23 @@
 (global-set-key (kbd "C-c C-f") 'goto-line)
 (global-set-key (kbd "M-<left>") 'previous-buffer)
 (global-set-key (kbd "M-<right>") 'next-buffer)
+(global-set-key (kbd "M-[") 'previous-buffer)
+(global-set-key (kbd "M-]") 'next-buffer)
 (global-set-key (kbd "M-|") 'indent-region)
 (global-set-key (kbd "M-h") 'mark-paragraph)
+
+;; 多个windows窗口切换.
+(global-set-key (kbd "s-[") 'ns-prev-frame)
+(global-set-key (kbd "s-]") 'ns-next-frame)
+
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-c C-f") 'goto-line)
 
 
 (global-set-key (kbd "C-<up>") 'backward-paragraph)
 (global-set-key (kbd "C-<down>") 'forward-paragraph)
+
+(global-set-key (kbd "C-c v") 'ff-find-other-file)
 
 
 ;;----------------------------------------------------------------------------
@@ -167,7 +182,54 @@
 
 (setq derl-cookie "abc")
 (setq erl-nodename-cache 'develop@127.0.0.1)
+;; erlang specific
 (setq flycheck-erlang-include-path  (list "../include" "../../include"  "../../../include"))
+(setq flycheck-erlang-library-path (list "ebin" "../ebin"  "../../ebin"  "../../../ebin"))
+
+
+(defvar rebar-directory "gl_online"
+  "匹配这个正则表达式的路径将会认为是工作文件夹,工作文件夹下的erlang文件被保存时触发自动编译.")
+
+;; 打印函数
+(setq rebar-directory  (list "gl_online"
+                             "galaxy-empire-hub-2"
+                             "gl_999"
+                             "6"
+                             "5"))
+
+(defun rebar-compile-source ()
+  "编译当前缓冲区的文件，在文件保存后执行."
+  (let ((buffer-name (buffer-file-name (current-buffer)))
+        (match-pos nil)(full-path nil)
+        (compile-cmd nil)(list-directory rebar-directory)
+        (match-directory nil))
+    (if (string-equal "erl" (file-name-extension buffer-name))
+        (progn
+          (while (and  (car list-directory)  (equal nil match-directory))
+            (if (string-match (car list-directory) buffer-name)
+                (setq  match-directory (car list-directory)))
+            (setq list-directory (cdr list-directory)))
+          (if (and match-directory (string-match match-directory buffer-name))
+              (progn
+                (setq match-pos (string-match match-directory buffer-name))
+                (setq full-path (substring buffer-name 0 match-pos))
+                (setq compile-cmd  (concat  "erlc " "-o " full-path
+                                            match-directory "/ebin/" " -Wall "
+                                            "-I" full-path match-directory "/include "
+                                            "-pa" full-path match-directory "/ebin "
+                                            buffer-name
+                                            ))
+                (shell-command compile-cmd "*Messages")
+                ;;(message compile-cmd)
+                )
+            )
+          )
+      )
+    )
+  )
+
+
+(add-hook 'after-save-hook 'rebar-compile-source)
 
 
 
@@ -178,6 +240,45 @@
 (defun gentoo()
   (interactive)
   (find-file-existing "/root@127.0.0.1#4022:/root/"))
+
+
+
+;;----------------------------------------------------------------------------
+;; 交换两个窗口的内容
+;;----------------------------------------------------------------------------
+
+(defun swap-buffers-in-windows ()
+  "Put the buffer from the selected window in next window, and vice versa."
+  (interactive)
+  (let* ((this (selected-window))
+         (other (next-window))
+         (this-buffer (window-buffer this))
+         (other-buffer (window-buffer other)))
+    (set-window-buffer other this-buffer)
+    (set-window-buffer this other-buffer)
+    )
+  )
+
+
+;; 打开api文件
+(defun api()
+  (interactive)
+  (find-file-existing "~/Project/GLD/gl_online/api/api.txt"))
+
+
+;; 打开api文件
+(defun pro()
+  (interactive)
+  (find-file-existing "~/Project/GLD/gl_online/api/protocal.txt"))
+
+
+
+(defun etags-create-current()
+  "Create etags"
+  (interactive)
+  (message (shell-command-to-string "find . -name \"*.[chCHp]*\" -print | etags -"  )))
+
+
 
 
 (provide 'init-zyk)
