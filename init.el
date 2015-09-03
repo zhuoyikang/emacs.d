@@ -89,6 +89,7 @@
 (require 'init-sql)
 (require 'init-yasnippet)
 (require 'init-zyk)
+(require 'init-golang)
 
 (require 'init-paredit)
 (require 'init-lisp)

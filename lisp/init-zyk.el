@@ -273,12 +273,10 @@
 
 
 
+
 (defun etags-create-current()
   "Create etags"
   (interactive)
   (message (shell-command-to-string "find . -name \"*.[chCHp]*\" -print | etags -"  )))
-
-
-
 
 (provide 'init-zyk)
