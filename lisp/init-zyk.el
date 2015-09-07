@@ -139,7 +139,7 @@
 
 ;;(global-set-key (kbd "C-f") 'set-mark-command)
 (global-set-key (kbd "C-c C-c")   'comment-region)
-(global-set-key (kbd "C-c C-u")   'uncomment-region)
+(global-set-key (kbd "C-c u")   'uncomment-region)
 (global-set-key (kbd "C-q") 'backward-kill-word)
 (global-set-key (kbd "C-c C-f") 'goto-line)
 (global-set-key (kbd "M-<left>") 'previous-buffer)
@@ -171,6 +171,7 @@
 (add-to-list 'load-path "/usr/local/share/distel/elisp")
 (require 'distel)
 (distel-setup)
+
 
 (setq erlang-indent-level 2)
 
@@ -240,6 +241,11 @@
 (defun gentoo()
   (interactive)
   (find-file-existing "/root@127.0.0.1#4022:/root/"))
+
+(defun gendis1()
+  (interactive)
+  (find-file-existing "/root@192.168.56.3:/root/"))
+
 
 
 

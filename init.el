@@ -90,6 +90,8 @@
 (require 'init-yasnippet)
 (require 'init-zyk)
 (require 'init-golang)
+(require 'init-jabber)
+(require 'init-thrift)
 
 (require 'init-paredit)
 (require 'init-lisp)
