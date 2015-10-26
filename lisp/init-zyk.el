@@ -32,6 +32,16 @@
 (grep-apply-setting 'grep-command  "grep -nr ")
 
 
+;;----------------------------------------------------------------------------
+;; rust
+;;----------------------------------------------------------------------------
+
+
+(require-package 'rust-mode)
+(require-package 'toml-mode)
+(require-package 'protobuf-mode)
+
+
 
 ;;----------------------------------------------------------------------------
 ;; org-mode
@@ -40,6 +50,10 @@
 (setq org-agenda-files (list "~/project/gtd/"
                              "~/project/gtd/Daily"
                              ))
+
+;; color by the code lang.
+(setq org-src-fontify-natively t)
+
 
 ;;显示不够的内容。自动换行.
 (add-hook 'org-mode-hook (lambda () (setq truncate-lines nil)))
@@ -79,6 +93,8 @@
                                   global-semantic-mru-bookmark-mode
                                   global-semantic-stickyfunc-mode))
 (semantic-mode 1)
+
+(setq lua-indent-level 4)
 
 
 ;; 导入高级的名字补全，信息显示等
@@ -184,8 +200,23 @@
 (setq derl-cookie "abc")
 (setq erl-nodename-cache 'develop@127.0.0.1)
 ;; erlang specific
-(setq flycheck-erlang-include-path  (list "../include" "../../include"  "../../../include"))
-(setq flycheck-erlang-library-path (list "ebin" "../ebin"  "../../ebin"  "../../../ebin"))
+(setq flycheck-erlang-include-path  (list "../include"
+                                          "../../include"
+                                          "../../../include"
+                                          "/Users/zhuoyikang/Source/pf/ejabberd-contrib/deps_ejabberd/include"
+                                          "/lib/ejabberd/include"
+                                          "/Users/zhuoyikang/Source/pf/ejabberd-contrib/deps_common_pf/include"
+                                          "/Users/zhuoyikang/Source/pf/ejabberd-contrib/deps_eredis/include"
+                                          "/Users/zhuoyikang/Source/pf/ejabberd-contrib/deps_erlcloud/deps/lhttpc/include"
+                                          "/Users/zhuoyikang/Source/pf/ejabberd-contrib/deps_erlcloud/deps/meck/test/include"
+                                          "/Users/zhuoyikang/Source/pf/ejabberd-contrib/deps_erlcloud/include"
+                                          "/Users/zhuoyikang/Source/pf/ejabberd-contrib/deps_erlzk/include"
+                                          "/Users/zhuoyikang/Source/pf/ejabberd-contrib/mod_pf_admin/include"
+                                          "/Users/zhuoyikang/Source/pf/ejabberd-contrib/mod_pf_admin_muc/include"
+                                          "/Users/zhuoyikang/Source/pf/ejabberd-contrib/mod_pf_user_mute/include"
+                                          ))
+
+(setq flycheck-erlang-library-path (list "ebin" "../ebin"  "../../ebin"  "../../../ebin"  "/lib/ejabberd/ebin/"))
 
 
 (defvar rebar-directory "gl_online"
