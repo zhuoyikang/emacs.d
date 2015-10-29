@@ -37,6 +37,7 @@
 ;;----------------------------------------------------------------------------
 
 
+(require-package 'graphviz-dot-mode)
 (require-package 'rust-mode)
 (require-package 'toml-mode)
 (require-package 'protobuf-mode)
