@@ -36,7 +36,7 @@
 ;; rust
 ;;----------------------------------------------------------------------------
 
-
+(require-package 'ess)
 (require-package 'graphviz-dot-mode)
 (require-package 'rust-mode)
 (require-package 'toml-mode)
@@ -228,7 +228,77 @@
                              "galaxy-empire-hub-2"
                              "gl_999"
                              "6"
-                             "5"))
+                             "5"
+                             ;;"galaxy_server"
+
+                             "player_node"
+                             "agent_node"
+                             "master_node"
+                             "pvp_node"
+                             "battle"
+                             "chat_server"
+                             "cluster_server"
+                             "conf_parser"
+                             "controller"
+                             "model"
+                             "mongodb_server"
+                             "server_manager"
+                             "utility"
+                             ))
+
+
+(setq beam_sync_list "/Users/zhuoyikang/Source/gl2/galaxy_server/")
+(setq beamHash (make-hash-table :test 'equal))
+
+
+;; 循环遍历copy
+(defun beam_hash_cp_key(key)
+  (let ((value (gethash key beamHash)))
+    (while (car value)
+      (let ((v1 (car value)))
+        (progn ()
+               (setq compile-cmd  (concat  "cp " key " " v1))
+               (shell-command compile-cmd "*Messages")
+               (message compile-cmd "*Messages")
+               )
+        )
+      (setq value (cdr value))
+      )
+    )
+  )
+
+(defun read-lines (filePath)
+  "Return a list of lines of a file at filePath."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (split-string (buffer-string) "\n" t)))
+
+
+(defun load_beam_hash ()
+  (let ((list (read-lines (concat beam_sync_list "scripts/.sync.sh")))
+        )
+    (while (car list)
+      ;;(message (car list) "*Messages")
+      (let ((scp (split-string  (car list)))
+            )
+        (if (> (length (list scp)) 0)
+            (progn
+              ;;(message (concat beam_sync_list (nth 1 scp)) "*Messages")
+              (puthash (concat beam_sync_list (nth 1 scp))
+                       (push (concat beam_sync_list (nth 2 scp)) (gethash (concat beam_sync_list (nth 1 scp)) beamHash))
+                       beamHash)
+              )
+          )
+        )
+      (setq list (cdr list)))
+    )
+  )
+
+(and (clrhash beamHash) (load_beam_hash))
+
+;;(replace-regexp-in-string ".erl" ".beam" (buffer-name))
+
+(buffer-file-name (current-buffer))
 
 (defun rebar-compile-source ()
   "编译当前缓冲区的文件，在文件保存后执行."
@@ -253,7 +323,13 @@
                                             buffer-name
                                             ))
                 (shell-command compile-cmd "*Messages")
-                ;;(message compile-cmd)
+                (message compile-cmd  "*Messages")
+                (message (concat full-path match-directory "/ebin/"
+                                 (replace-regexp-in-string ".erl" ".beam" (buffer-name))
+                                 )  "*Messages")
+                (beam_hash_cp_key (concat full-path match-directory "/ebin/"
+                                          (replace-regexp-in-string ".erl" ".beam" (buffer-name))
+                                          ))
                 )
             )
           )
@@ -261,8 +337,16 @@
     )
   )
 
+(defun get-string-from-file (filePath)
+  "Return filePath's file content."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (buffer-string)))
+
 
 (add-hook 'after-save-hook 'rebar-compile-source)
+
+
 
 
 
